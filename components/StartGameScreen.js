@@ -7,10 +7,13 @@ import {
   Button,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
 import Card from "./Card";
 import Colors from "../constants/colors";
 import Input from "./Input";
+import ShowNumber from "./ShowNumber";
+
 const StartGameScreen = (props) => {
   const [enteredValue, setEnteredValue] = useState("");
   const [confirmed, setConfirmed] = useState(false);
@@ -24,14 +27,26 @@ const StartGameScreen = (props) => {
     setConfirmed(false);
   };
   const handleConfirm = () => {
-    const num = parseInt(selectedNumber);
-    if (num === NaN || num <= 0 || num > 99) {
+    const num = parseInt(enteredValue);
+    if (isNaN(num) || num <= 0 || num > 99) {
       //ie. invalid number entered
+      Alert.alert(
+        "Invalid Number!",
+        "Please enter a valid number between 1 & 99",
+        [
+          {
+            text: "Ok",
+            onPress: handleReset,
+            style: "destructive",
+          },
+        ]
+      );
       return;
     }
     setEnteredValue("");
     setConfirmed(true);
     setSelectedNumber(enteredValue);
+    Keyboard.dismiss();
     //order doesn't matter bc it'll happen in batch
   };
   return (
@@ -71,7 +86,16 @@ const StartGameScreen = (props) => {
             </View>
           </View>
         </Card>
-        {confirmed && <Text>Chosen number: {selectedNumber}</Text>}
+        {confirmed && (
+          <Card style={styles.summayContainer}>
+            <Text>You selected</Text>
+            <ShowNumber>{selectedNumber}</ShowNumber>
+            <Button
+              title="START GAME"
+              onPress={() => props.userNumber(selectedNumber)}
+            />
+          </Card>
+        )}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -104,6 +128,10 @@ const styles = StyleSheet.create({
   input: {
     width: 50,
     textAlign: "center",
+  },
+  summayContainer: {
+    marginTop: 20,
+    alignItems: "center",
   },
 });
 
