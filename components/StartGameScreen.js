@@ -13,11 +13,18 @@ import Card from "./Card";
 import Colors from "../constants/colors";
 import Input from "./Input";
 import ShowNumber from "./ShowNumber";
+import { useFonts } from "expo-font";
 
 const StartGameScreen = (props) => {
   const [enteredValue, setEnteredValue] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState();
+  const [loaded] = useFonts({
+    "GreatVibes-Regular": require("../assets/fonts/GreatVibes-Regular.ttf"),
+  });
+  if (!loaded) {
+    return <Text>Loading...</Text>;
+  }
   const handleInputChange = (inputText) => {
     //replacing any char. other than 0-9 with empty string
     setEnteredValue(inputText.replace(/[^0-9]/g, ""));
@@ -107,8 +114,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: 40,
     marginVertical: 10,
+    fontFamily: "GreatVibes-Regular",
   },
   inputContainer: {
     width: 300,

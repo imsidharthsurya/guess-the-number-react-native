@@ -19,6 +19,7 @@ export default function HomeScreen() {
     //starting the game so make guessRounds as 0
     setGuessRounds(0);
   };
+
   let content = <StartGameScreen userNumber={userNumberHandler} />;
 
   if (userNumber != null && guessRounds <= 0) {
@@ -32,7 +33,6 @@ export default function HomeScreen() {
         userInput={userNumber}
         newGame={newGameHandler}
       />
-      // <GameOverScreen />
     );
   }
 
