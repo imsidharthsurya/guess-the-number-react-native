@@ -14,6 +14,7 @@ import Colors from "../constants/colors";
 import Input from "./Input";
 import ShowNumber from "./ShowNumber";
 import { useFonts } from "expo-font";
+import MainButton from "./MainButton";
 
 const StartGameScreen = (props) => {
   const [enteredValue, setEnteredValue] = useState("");
@@ -97,10 +98,9 @@ const StartGameScreen = (props) => {
           <Card style={styles.summayContainer}>
             <Text>You selected</Text>
             <ShowNumber>{selectedNumber}</ShowNumber>
-            <Button
-              title="START GAME"
-              onPress={() => props.userNumber(selectedNumber)}
-            />
+            <MainButton onPress={() => props.userNumber(selectedNumber)}>
+              START GAME
+            </MainButton>
           </Card>
         )}
       </View>
