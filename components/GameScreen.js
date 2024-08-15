@@ -6,6 +6,7 @@ import {
   Button,
   Alert,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import ShowNumber from "./ShowNumber";
 import MainButton from "./MainButton";
@@ -29,6 +30,24 @@ const GameScreen = (props) => {
   const initialGuess = generateRandomNumber(1, 100, userInput);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
   const [pastGuesses, setPastGuesses] = useState([initialGuess]);
+  const [availableDeviceWidth, setAvailableDeviceWidth] = useState(
+    Dimensions.get("window").width
+  );
+  const [availableDeviceHeight, setAvailableDeviceHeight] = useState(
+    Dimensions.get("window").height
+  );
+
+  useEffect(() => {
+    const setupDimensions = () => {
+      setAvailableDeviceHeight(Dimensions.get("window").height);
+      setAvailableDeviceWidth(Dimensions.get("window").width);
+    };
+
+    dimensionHandler = Dimensions.addEventListener("change", setupDimensions);
+    return () => {
+      dimensionHandler.remove();
+    };
+  });
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
 
@@ -69,6 +88,47 @@ const GameScreen = (props) => {
     setPastGuesses((oldGuesses) => [num, ...oldGuesses]);
     //b/c we want our recent guess to be on top or start of the array
   };
+
+  if (Dimensions.get("window").height < 500) {
+    //for landscape mode return diff. jsx
+    return (
+      <View style={styles.screen}>
+        <Text>Opponent's Guess</Text>
+        <View style={styles.landscapeCont}>
+          <MainButton
+            onPress={() => {
+              nextGuessHandler("lower");
+            }}
+          >
+            <Ionicons name="remove" size={24} color="white" />
+          </MainButton>
+          <ShowNumber>{currentGuess}</ShowNumber>
+
+          <MainButton
+            onPress={() => {
+              nextGuessHandler("greater");
+            }}
+          >
+            <Ionicons name="add" size={24} color="white" />
+          </MainButton>
+        </View>
+        <View style={styles.list}>
+          <ScrollView contentContainerStyle={styles.scroll}>
+            {pastGuesses.map((guess, index) => {
+              //use guess as key b/c every guess will be unique now
+              return (
+                <View key={guess} style={styles.listItem}>
+                  <Text>#{pastGuesses.length - index}</Text>
+                  <Text>{guess}</Text>
+                </View>
+              );
+            })}
+          </ScrollView>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.screen}>
       <Text>Opponent's Guess</Text>
@@ -135,6 +195,12 @@ const styles = StyleSheet.create({
   },
   scroll: {
     alignItems: "center",
+  },
+  landscapeCont: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    width: "80%",
   },
 });
 
